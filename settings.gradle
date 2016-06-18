@@ -1,0 +1,4 @@
+rootProject.name = 'xpro-integration'
+include 'COMMON'
+include 'SMS'
+include 'CLIENT'

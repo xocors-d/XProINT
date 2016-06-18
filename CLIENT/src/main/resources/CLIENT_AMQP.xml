@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
+       xmlns:cloud="http://schema.cloudfoundry.org/spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://schema.cloudfoundry.org/spring
+			http://schema.cloudfoundry.org/spring/cloudfoundry-spring.xsd
+			http://www.springframework.org/schema/integration
+			http://www.springframework.org/schema/integration/spring-integration.xsd
+			http://www.springframework.org/schema/integration/amqp
+			http://www.springframework.org/schema/integration/amqp/spring-integration-amqp.xsd
+			http://www.springframework.org/schema/rabbit
+			http://www.springframework.org/schema/rabbit/spring-rabbit.xsd
+			http://www.springframework.org/schema/integration/stream
+			http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd">
+
+    <!-- rabbit connection factory, rabbit template, and rabbit admin -->
+    <import resource="AMQP_Config.xml" />
+    <bean id ="XProClient" class = "com.xocors.bot.xpro.client.gui.XProClient"></bean>
+    <!-- To receive an AMQP Message from a Queue, and respond to its reply-to address, configure an inbound-gateway. -->
+    <int-amqp:inbound-gateway
+            id="Client-1"
+            request-channel="Q.CLIENT.1"
+            queue-names="Q.CentralBus"
+            connection-factory="rabbitConnectionFactory" />
+
+    <int:chain input-channel="Q.CLIENT.1">
+        <int:json-to-object-transformer type="com.xocors.bot.xpro.common.XProApplication"/>
+        <int:service-activator method="updateApplication" ref="XProClient">
+            <!--bean class="com.xocors.bot.xpro.sms.service.impl.XProSMSServerImpl"/-->
+        </int:service-activator>
+        <int:object-to-json-transformer content-type="text/x-json"/>
+    </int:chain>
+
+    <!-- rabbit exchanges, queues, and bindings used by this app -->
+    <rabbit:topic-exchange name="EX.CentralBUS" auto-delete="true" durable="true">
+        <rabbit:bindings>
+            <rabbit:binding queue="Q.CentralBus" pattern="xpro.*"/>
+        </rabbit:bindings>
+    </rabbit:topic-exchange>
+
+    <rabbit:queue name="Q.CentralBus" auto-delete="true" durable="true"/>
+</beans>

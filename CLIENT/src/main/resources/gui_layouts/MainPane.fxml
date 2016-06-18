@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xocors.bot.xpro.client.gui.component.MainPaneController">
+    <children>
+        <TabPane fx:id="tabPane" minHeight="850.0" minWidth="1500.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <tabs>
+                <Tab fx:id="tabDashboard" text="Dashboard">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <TableView fx:id="tbViewDashboard" editable="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+                                    <columns>
+                                        <TableColumn fx:id="isSelectedCol" prefWidth="38.0">
+                                            <graphic>
+                                                <CheckBox fx:id="cbForAll" mnemonicParsing="false" />
+                                            </graphic>
+                                        </TableColumn>
+                                        <TableColumn fx:id="appIDCol" prefWidth="153.0" text="Application ID" />
+                                        <TableColumn fx:id="captchaImgCol" prefWidth="144.0" text="Captcha Image" />
+                                        <TableColumn fx:id="captchaTxtCol" prefWidth="132.0" text="Captcha Text" />
+                                        <TableColumn fx:id="smsImgCol" prefWidth="226.0" text="SMS Image" />
+                                        <TableColumn fx:id="smsTxtCol" prefWidth="110.0" text="SMS Text" />
+                                        <TableColumn fx:id="smsReceivedCol" prefWidth="118.0" text="Received SMS" />
+                                        <TableColumn fx:id="stsMsgCol" prefWidth="394.0" text="Status/Message" />
+                                    </columns>
+                                </TableView>
+                                <Button fx:id="btnRefresh" layoutX="14.0" layoutY="9.0" mnemonicParsing="false" text="Refresh" />
+                                <Button fx:id="btnSubmitAll" layoutX="80.0" layoutY="9.0" mnemonicParsing="false" text="Submit All" />
+                                <Button fx:id="btnSubmitSelected" layoutX="163.0" layoutY="9.0" mnemonicParsing="false" text="Submit Selected" />
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="tabAppMaint" text="Application">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <TableView fx:id="tbApplication" editable="true" layoutX="57.0" layoutY="39.0" prefHeight="777.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="39.0">
+                                    <columns>
+                                        <TableColumn fx:id="fieldCol" prefWidth="150.0" text="Field" />
+                                        <TableColumn fx:id="valueCol" minWidth="0.0" prefWidth="431.0" text="Value" />
+                                    </columns>
+                                </TableView>
+                                <TextField fx:id="txtSearch" layoutX="5.0" layoutY="10.0" prefHeight="23.0" prefWidth="252.0" promptText="Search Application" AnchorPane.leftAnchor="5.0" />
+                                <Button fx:id="btnSave" defaultButton="true" layoutX="499.0" layoutY="10.0" mnemonicParsing="false" text="Save" AnchorPane.leftAnchor="499.0" />
+                                <Button fx:id="btnDelete" layoutX="550.0" layoutY="10.0" mnemonicParsing="false" text="Delete" />
+                                <Label fx:id="lblAppOptSummary" alignment="TOP_LEFT" layoutX="614.0" layoutY="42.0" lineSpacing="1.0" prefHeight="281.0" prefWidth="496.0" text="Option List Summary" wrapText="true">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                            </children></AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </children>
+</AnchorPane>

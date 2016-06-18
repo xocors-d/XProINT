@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.jsmpp:jsmpp:2.1.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jsmpp/jsmpp/2.1.1/83f5d6e69756da091a7b313a6f2214ce73089e52/jsmpp-2.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jsmpp/jsmpp/2.1.1/98804959624edd8c1c6b940883a2316f28920dd7/jsmpp-2.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
