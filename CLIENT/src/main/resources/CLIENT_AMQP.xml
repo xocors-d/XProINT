@@ -22,6 +22,12 @@
     <!-- rabbit connection factory, rabbit template, and rabbit admin -->
     <import resource="AMQP_Config.xml" />
     <bean id ="XProClient" class = "com.xocors.bot.xpro.client.gui.XProClient"></bean>
+
+    <!-- spring integration flow -->
+    <int:gateway id="xProGateway" service-interface="com.xocors.bot.xpro.gateway.XProGateway" />
+
+    <int:channel id="applications"/>
+
     <!-- To receive an AMQP Message from a Queue, and respond to its reply-to address, configure an inbound-gateway. -->
     <int-amqp:inbound-gateway
             id="Client-1"

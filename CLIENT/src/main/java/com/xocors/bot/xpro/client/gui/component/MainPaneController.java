@@ -6,6 +6,7 @@ import com.xocors.bot.xpro.client.gui.model.DashboardTableItem;
 import com.xocors.bot.xpro.client.gui.utility.ObjToMapConverter;
 import com.xocors.bot.xpro.client.gui.utility.OptionListGenerator;
 import com.xocors.bot.xpro.common.XProApplication;
+import com.xocors.bot.xpro.gateway.XProGateway;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -20,15 +21,13 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Popup;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Created by yoyow on 2016/5/31.
@@ -67,9 +66,9 @@ public class MainPaneController implements Initializable {
     @FXML
     private Button btnSubmitAll;
     @FXML
-    private TextField txtSearch;
+    private Button btnSubmitSelected;
     @FXML
-    private Button btnSearch;
+    private TextField txtSearch;
     @FXML
     private Button btnSave;
     @FXML
@@ -93,6 +92,8 @@ public class MainPaneController implements Initializable {
 
     private XProAppRepository xProAppRepository;
 
+    private XProGateway xProGateway;
+
     public MainPaneController() {
 
     }
@@ -113,6 +114,28 @@ public class MainPaneController implements Initializable {
         };
 
         btnRefresh.setOnAction(event -> refresh());
+        btnSubmitAll.setOnAction(event -> {
+            List<XProApplication> appList = new ArrayList<>();
+            dashboardData.forEach(row -> {
+                appList.add(xProAppRepository.findByApplicationID(row.getAppIDCell()));
+            });
+
+            submitApplications(appList);
+
+        });
+
+        btnSubmitSelected.setOnAction(event -> {
+            List<XProApplication> appList = new ArrayList<>();
+            dashboardData.forEach(row -> {
+                if(row.getIsSelectedCell()){
+                    appList.add(xProAppRepository.findByApplicationID(row.getAppIDCell()));
+
+                }
+            });
+            submitApplications(appList);
+
+        });
+
         cbForAll.setOnAction(event -> {
             if (event.getSource() instanceof CheckBox) {
                 dashboardData.forEach(item -> item.setIsSelectedCell(cbForAll.isSelected()));
@@ -161,6 +184,16 @@ public class MainPaneController implements Initializable {
 
         captchaTxtCol.setCellValueFactory(new PropertyValueFactory<>("captchaTxtCell"));
         captchaTxtCol.setCellFactory(TextFieldTableCell.forTableColumn(sc));
+        captchaTxtCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent event) {
+                dashboardData.get(event.getTablePosition().getRow()).setCaptchaTxtCell(event.getNewValue().toString());
+                DashboardTableItem rowItem = (DashboardTableItem) event.getRowValue();
+                XProApplication application = xProAppRepository.findByApplicationID(rowItem.getAppIDCell());
+                application.setCaptchaResult(event.getNewValue().toString());
+                xProAppRepository.save(application);
+            }
+        });
 
         smsImgCol.setCellValueFactory(new PropertyValueFactory<>("smsImgCell"));
         smsImgCol.setCellFactory(formattedTableCellFactory);
@@ -171,6 +204,10 @@ public class MainPaneController implements Initializable {
             @Override
             public void handle(TableColumn.CellEditEvent event) {
                 dashboardData.get(event.getTablePosition().getRow()).setSmsTxtCell(event.getNewValue().toString());
+                DashboardTableItem rowItem = (DashboardTableItem) event.getRowValue();
+                XProApplication application = xProAppRepository.findByApplicationID(rowItem.getAppIDCell());
+                application.setSmsImgOcrResult(event.getNewValue().toString());
+                xProAppRepository.save(application);
             }
         });
 
@@ -231,6 +268,10 @@ public class MainPaneController implements Initializable {
         tbApplication.getSortOrder().add(fieldCol);
     }
 
+    private void submitApplications(List<XProApplication> appList) {
+        appList.forEach(application -> xProGateway.submitApplication(application));
+    }
+
     public void refresh(){
         tbViewDashboard.setDisable(true);
 
@@ -250,6 +291,8 @@ public class MainPaneController implements Initializable {
         });
 
         tbViewDashboard.setDisable(false);
+
+
 
     }
 
@@ -373,6 +416,7 @@ public class MainPaneController implements Initializable {
 //        System.out.println(String.join("\n",beanDefinitionNames));
 
         xProAppRepository = context.getBean(XProAppRepository.class);
+        xProGateway = (XProGateway) context.getBean("xProGateway");
 
     }
 

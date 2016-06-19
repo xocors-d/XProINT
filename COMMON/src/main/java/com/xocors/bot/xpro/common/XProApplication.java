@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.Base64;
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * Created by yoyow on 2016/5/24.
  */
-public class XProApplication {
+public class XProApplication implements Serializable{
     @Id
     private String id;
     private List<Map<String, String>> steps;
